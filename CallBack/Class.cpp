@@ -24,13 +24,15 @@ extern GlCirclePainter* ptrChessWhitePainter;
 extern GlCirclePainter* ptrChessBlackPainter;
 extern bool myCharacter;
 extern int chess_width;
+extern  volatile bool HasData;
+extern std::condition_variable cv;
 extern GameSocketManager gameSocketManager;
 //extern std::mutex m;
 //extern std::condition_variable cv;
 extern bool bReady;
 
 struct SocketData;
-extern std::queue<SocketData> chess_point_buffer;
+extern ChessPointBuffer chess_point_buffer;
 extern std::queue<PointGl> SocketReceiveBuffer;
 
 void addOneChessToBaord(PointGl chessCoor, bool myCharacter, GlSize width ) {
@@ -50,9 +52,6 @@ void handleClickInput_socket(double xpos, double ypos) {
 	//add data to buffer to be analyzed
 	SocketData temp{ clickPoint };
 	chess_point_buffer.push(temp);
-	if (chess_point_buffer.empty()) {
-		return;
-	}
 
 
 	//dataBase
@@ -65,20 +64,12 @@ void handleClickInput_socket(double xpos, double ypos) {
 		if (ptrChessWhitePainter != nullptr) {
 			gameSocketManager.setBReceive(true);
 			SocketReceiveBuffer.push(chessCoor);
-			//std::unique_lock lk(m);
-
-			//cv.wait(lk, [] {return bReady; });
-
-			////ptrChessWhitePainter->addOne(ChessCoor, ptrBoardLoc->getWidth());
-
-			//gameSocketManager.setBReceive(false);
-			//bReady = false;
 		}
 	}
 
 	//rule
-	bool isWin = is_win(clickPoint, ptr_m_chesses, chess_width, !myCharacter, true);
-	cout << isWin << endl;
+	HasData = true;
+	cv.notify_one();
 }
 
 void handleClickInput(double xpos, double ypos) {
@@ -89,9 +80,6 @@ void handleClickInput(double xpos, double ypos) {
 	//add data to socket buffer to be analyzed
 	SocketData temp{ clickPoint };
 	chess_point_buffer.push(temp);
-	if (chess_point_buffer.empty()) {
-		return;
-	}
 
 
 	//dataBase
@@ -105,8 +93,8 @@ void handleClickInput(double xpos, double ypos) {
 	}
 
 	//rule
-	bool isWin = is_win(clickPoint, ptr_m_chesses, chess_width, myCharacter, true);
-	cout << isWin << endl;
+	HasData = true;
+	cv.notify_one();
 }
 
 

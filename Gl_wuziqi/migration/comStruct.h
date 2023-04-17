@@ -1,5 +1,8 @@
 #pragma once
 #include<map>
+#include <mutex>
+#include <queue>
+
 //#include<vector>
 
 //using ClickPoint = std::vector<PointType>;
@@ -90,3 +93,22 @@ struct SocketData {
 
 typedef void(*handleInput)(double x, double y);
 
+class ChessPointBuffer {
+	std::queue<SocketData> m_data;
+	static std::mutex m;
+public:
+	void push(SocketData point) {
+		std::lock_guard<std::mutex> lk(m);
+		m_data.push(point);
+	}
+	void pop() {
+		std::lock_guard< std::mutex> lk(m);
+		m_data.pop();
+	}
+	bool empty() {
+		return m_data.empty();
+	}
+	SocketData& front() {
+		return m_data.front();
+	}
+};

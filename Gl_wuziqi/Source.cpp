@@ -54,10 +54,13 @@ std::condition_variable cv;
 //bool bReady = false;
 bool bConnectionOrderConfirmed = false;
 
-std::queue<SocketData> chess_point_buffer;
+ChessPointBuffer chess_point_buffer;
 std::queue<PointGl> SocketReceiveBuffer;
+std::mutex ChessPointBuffer::m;
 
-static volatile bool HasData = true;
+
+
+volatile bool HasData = true;
 
 static std::thread* thread_socket = nullptr;
 static std::thread* thread_rule = nullptr;
@@ -100,7 +103,6 @@ void worker_rule() {
 			std::unique_lock lk(m);
 			HasData = false;
 			cv.wait(lk, [] {return HasData; });
-			return;
 		}
 		else {
 			while (!chess_point_buffer.empty())
@@ -108,6 +110,7 @@ void worker_rule() {
 				SocketData& socket_data = chess_point_buffer.front();
 				if (is_win(socket_data.point_chess, dataWuziqiSpecType.get(), chess_width, myCharacter, true)) {
 					//
+					cout << "win" << endl;
 				}
 				else {
 
@@ -124,13 +127,9 @@ void startRuleThread() {
 
 int main()
 {
-
-
 	thread_socket = matchplayer(&gameSocketManager, myCharacter);
-	//std::unique_lock lk(m);
-
-	//cv.wait(lk, [] {return bConnectionOrderConfirmed; });
 	myCharacter = gameSocketManager.getBRequestConnection();
+	startRuleThread();
 
 	std::thread boardLoopRender([&]() {
 		GlfwConfigure* myConfig = GlfwConfigure::getInstance();
