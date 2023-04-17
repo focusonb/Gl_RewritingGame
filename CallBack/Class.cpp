@@ -21,6 +21,7 @@ using std::endl;
 extern class DataWuziqiSpecType dataWuziqiSpecType;
 extern class GameSocketManager gameSocketManager;
 extern GlCirclePainter* ptrChessWhitePainter;
+extern GlCirclePainter* ptrChessBlackPainter;
 extern bool myCharacter;
 extern int chess_width;
 extern GameSocketManager gameSocketManager;
@@ -31,6 +32,15 @@ extern bool bReady;
 struct SocketData;
 extern std::queue<SocketData> chess_point_buffer;
 extern std::queue<PointGl> SocketReceiveBuffer;
+
+void addOneChessToBaord(PointGl chessCoor, bool myCharacter, GlSize width ) {
+	if (myCharacter == false){
+		ptrChessWhitePainter->addOne(chessCoor, width);
+	}
+	else {
+		ptrChessBlackPainter->addOne(chessCoor, width);
+	}
+}
 
 void handleClickInput_socket(double xpos, double ypos) {
 	PointGl chessCoor;
@@ -46,7 +56,7 @@ void handleClickInput_socket(double xpos, double ypos) {
 
 
 	//dataBase
-	dataWuziqiSpecType.insert(clickPoint, myCharacter);
+	dataWuziqiSpecType.insert(clickPoint, !myCharacter);
 	MapPoint* ptr_m_chesses = dataWuziqiSpecType.get();
 
 
@@ -67,7 +77,7 @@ void handleClickInput_socket(double xpos, double ypos) {
 	}
 
 	//rule
-	bool isWin = is_win(clickPoint, ptr_m_chesses, chess_width, myCharacter, true);
+	bool isWin = is_win(clickPoint, ptr_m_chesses, chess_width, !myCharacter, true);
 	cout << isWin << endl;
 }
 
@@ -91,7 +101,7 @@ void handleClickInput(double xpos, double ypos) {
 
 	//drawe chess
 	if (ptrChessWhitePainter != nullptr) {
-		ptrChessWhitePainter->addOne(ChessCoor, ptrBoardLoc->getWidth());
+		addOneChessToBaord(ChessCoor, myCharacter, ptrBoardLoc->getWidth());
 	}
 
 	//rule

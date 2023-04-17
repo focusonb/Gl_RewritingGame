@@ -5,7 +5,7 @@
 using namespace std;
 using ChessPoint = ClickPoint;
 
-bool is_win(ChessPoint& point_chess, MapPoint const *ptrchesses, int& chess_width, bool&myturn, const bool& gamegoingon);
+bool is_win(ChessPoint& point_chess, MapPoint const *ptrchesses, int& chess_width, bool myturn, const bool& gamegoingon);
 bool check_row(ChessPoint& point_chess, MapPoint const* ptrchesses, int& chess_width, bool&myturn);
 bool Is_row_win(ChessPoint& point_chess, MapPoint const* ptrchesses, int& chess_width, int i);
 bool check_col(ChessPoint& point_chess, MapPoint const* ptrchesses, int& chess_width, bool&myturn);

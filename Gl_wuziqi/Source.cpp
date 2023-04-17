@@ -39,6 +39,7 @@
 
 
 GlCirclePainter* ptrChessWhitePainter = nullptr;
+GlCirclePainter* ptrChessBlackPainter = nullptr;
 BoardLocation* ptrBoardLoc = nullptr;
 
 //bool is_win(ChessPoint& point_chess, MapPoint*&ptrchesses, int& chess_width, bool&myturn, const bool& gamegoingon);
@@ -50,7 +51,8 @@ PointGl myChessCoor;
 
 std::mutex m;
 std::condition_variable cv;
-bool bReady = false;
+//bool bReady = false;
+bool bConnectionOrderConfirmed = false;
 
 std::queue<SocketData> chess_point_buffer;
 std::queue<PointGl> SocketReceiveBuffer;
@@ -125,7 +127,10 @@ int main()
 
 
 	thread_socket = matchplayer(&gameSocketManager, myCharacter);
+	//std::unique_lock lk(m);
 
+	//cv.wait(lk, [] {return bConnectionOrderConfirmed; });
+	myCharacter = gameSocketManager.getBRequestConnection();
 
 	std::thread boardLoopRender([&]() {
 		GlfwConfigure* myConfig = GlfwConfigure::getInstance();
@@ -137,8 +142,9 @@ int main()
 		ptrBoardLoc = &boardLoc;
 
 		GlCirclePainter chessWhitePainter(pair<int,int>(100,100), chess_width, CorlorChess::white);
-		GlCirclePainter chessBlackPainter(pair<int,int>(600,600), chess_width, CorlorChess::black);
+		GlCirclePainter chessBlackPainter(pair<int,int>(100,100), chess_width, CorlorChess::black);
 		ptrChessWhitePainter = &chessWhitePainter;
+		ptrChessBlackPainter = &chessBlackPainter;
 
 		GlSquarePainter square;
 		for (auto it : mapLoca) {
@@ -160,7 +166,7 @@ int main()
 
 			while (!SocketReceiveBuffer.empty()) {
 				PointGl chessPoint = SocketReceiveBuffer.front();
-				chessWhitePainter.addOne(chessPoint, boardLoc.getWidth());
+				addOneChessToBaord(chessPoint, !myCharacter, width);
 				SocketReceiveBuffer.pop();
 			}
 

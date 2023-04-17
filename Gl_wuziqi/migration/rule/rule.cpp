@@ -7,7 +7,7 @@
 //#include "GameWidget.h"
 class GameWidget;
 
-bool is_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const *ptrchesses, int& chess_width, bool&myturn, const bool& gamegoingon)
+bool is_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const *ptrchesses, int& chess_width, bool myturn, const bool& gamegoingon)
 {
 	if (check_row(point_chess, ptrchesses, chess_width, myturn)||
 		check_col(point_chess, ptrchesses, chess_width, myturn)||
