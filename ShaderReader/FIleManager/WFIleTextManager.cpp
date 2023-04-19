@@ -41,7 +41,7 @@ char* WFIleTextManager::outPut()
 	//std::cout <<"1"<<"\n"<< vShaderCode << std:: endl;
 	if (m_shaderContent != nullptr)
 	{
-		delete[] m_shaderContent;
+		//delete[] m_shaderContent;
 		m_shaderContent = nullptr;
 	}
 	m_textSize = strlen(vShaderCode) + 1;
@@ -54,7 +54,7 @@ WFIleTextManager::~WFIleTextManager()
 {
 	if (m_shaderContent != nullptr)
 	{
-		delete[] m_shaderContent;
+		//delete[] m_shaderContent;
 	}
 }
 

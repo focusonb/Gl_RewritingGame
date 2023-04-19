@@ -10,6 +10,6 @@ public:
 	unsigned int getShaderProgram();
 private:
 	FileManagerControler* m_ptr_controler;
-	unsigned int m_shaderProgram;
+	unsigned int m_shaderProgram = 0;
 	unsigned int loadShader(const char* filePath, int shaderType, FIleTextManager type = FIleTextManager::Windows);
 };

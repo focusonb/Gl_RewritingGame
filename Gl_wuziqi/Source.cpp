@@ -100,7 +100,7 @@ void worker_rule() {
 	while (1) {
 		if (chess_point_buffer.empty()) {
 			//what if here release a mutex.
-			std::unique_lock lk(m);
+			std::unique_lock<std::mutex> lk(m);
 			HasData = false;
 			cv.wait(lk, [] {return HasData; });
 		}
@@ -168,7 +168,6 @@ int main()
 				addOneChessToBaord(chessPoint, !myCharacter, width);
 				SocketReceiveBuffer.pop();
 			}
-
 
 			square.draw();
 			chessWhitePainter.draw();

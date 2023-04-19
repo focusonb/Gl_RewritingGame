@@ -55,7 +55,7 @@ void GlSquarePainter::draw() const
 		glBindVertexArray(it);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	//glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void GlSquarePainter::addOne(const PointGl& point, int width)
@@ -161,6 +161,7 @@ bool GlSquarePainter::configureShader()
 	glUniform1i(glGetUniformLocation(shaderProgram, texture), 0);
 	glEnable(GL_DEPTH_TEST);
 	if (shaderProgram == 0 || shaderProgramOutSquare == 0) {
+		cout << "glUniform1i failed" << endl;
 		return false;
 	}
 	return true;
