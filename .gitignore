@@ -1,0 +1,13 @@
+*
+!*.cpp
+!*.cc
+!*.c
+!*.hpp
+!*.h
+!*.sheet
+!*.txt
+!*.jpg
+!*.png
+!*.lib
+!*.md
+!*/
