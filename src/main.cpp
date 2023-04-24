@@ -21,15 +21,15 @@
 #include <mutex>
 #include <condition_variable>
 
-#include "../ShaderReader/FIleManager/FileManagerControler.h"
-#include "../ShaderReader/MyShader.h"
-#include "myVertices.h"
+#include "UI/ShaderReader/FIleManager/FileManagerControler.h"
+#include "UI/ShaderReader/MyShader.h"
 
 
-#include "../TextureManager/TextureManager.h"
-#include "../GlfwConfigure/GlfwConfigure.h"
-#include "../DrawBoard/glSquarePainter.h"
-#include "../DrawBoard/GlCirclePainter.h"
+
+#include "UI/TextureManager/TextureManager.h"
+#include "UI/GlfwConfigure/GlfwConfigure.h"
+#include "UI/DrawBoard/glSquarePainter.h"
+#include "UI/DrawBoard/GlCirclePainter.h"
 
 
 #include "migration\data_base\DataWuziqi.h"
