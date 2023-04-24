@@ -27,7 +27,6 @@
 
 
 #include "../TextureManager/TextureManager.h"
-#include "../CallBack/callback.h"
 #include "../GlfwConfigure/GlfwConfigure.h"
 #include "../DrawBoard/glSquarePainter.h"
 #include "../DrawBoard/GlCirclePainter.h"

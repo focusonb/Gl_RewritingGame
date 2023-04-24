@@ -1,5 +1,5 @@
 #include "callback.h"
-#include "../DrawBoard/BoardLocation.h"
+#include "../../DrawBoard/BoardLocation.h"
 
 
 glm::vec3 cameraFront(0.0, 0.0, -2.0);

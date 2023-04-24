@@ -4,11 +4,11 @@
 //#include <condition_variable>
 
 #include "mouseClick_callback.h"
-#include "../DrawBoard/GlCirclePainter.h"
-#include "../DrawBoard/BoardLocation.h"
-#include "../migration/data_base/DataWuziqi.h"
-#include "../migration/rule/rule.h"
-#include "../migration/socket/GameSocketManager.h"
+#include "../../DrawBoard/GlCirclePainter.h"
+#include "../../DrawBoard/BoardLocation.h"
+#include "../../migration/data_base/DataWuziqi.h"
+#include "../../migration/rule/rule.h"
+#include "../../migration/socket/GameSocketManager.h"
 
 #include <glfw3.h>
 

@@ -1,7 +1,7 @@
 #include "GlCirclePainter.h"
 #include <glad/glad.h>
 #include <glfw3.h>
-#include "../CallBack/callback.h"
+//#include "../CallBack/callback.h"
 
 #include "../ShaderReader/MyShader.h"
 #include "../TextureManager/TextureManager.h"
