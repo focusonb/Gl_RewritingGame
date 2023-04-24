@@ -177,7 +177,7 @@ int main()
 		gameSocketManager.TurnOffSocket();
 		gameSocketManager.closeConnection();
 	});
-
+	boardLoopRender.join();
 	thread_socket->join();
 	thread_rule->join();
 	return 0;
