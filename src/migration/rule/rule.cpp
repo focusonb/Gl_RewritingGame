@@ -7,7 +7,7 @@
 //#include "GameWidget.h"
 class GameWidget;
 
-bool is_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const *ptrchesses, int& chess_width, bool myturn, const bool& gamegoingon)
+bool is_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const *ptrchesses, const int& chess_width, bool myturn, const bool& gamegoingon)
 {
 	if (check_row(point_chess, ptrchesses, chess_width, myturn)||
 		check_col(point_chess, ptrchesses, chess_width, myturn)||
@@ -22,7 +22,7 @@ bool is_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const *ptrchesses
 		return false;
 	}
 }  
-bool check_row(ChessPoint& point_chess, map<ChessPoint, int, cmp>const* ptrchesses, int& chess_width, bool&myturn)
+bool check_row(ChessPoint& point_chess, map<ChessPoint, int, cmp>const* ptrchesses, const int& chess_width, bool&myturn)
 {
 	if (myturn == true)
 	{
@@ -32,7 +32,7 @@ bool check_row(ChessPoint& point_chess, map<ChessPoint, int, cmp>const* ptrchess
 	return Is_row_win(point_chess, ptrchesses, chess_width, 0);
 
 }
-bool Is_row_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, int& chess_width, int i)
+bool Is_row_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, const int& chess_width, int i)
 {
 	int count = -1;
 	for (
@@ -68,7 +68,7 @@ bool Is_row_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrche
 	else
 		return false;
 }
-bool check_col(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, int& chess_width, bool&myturn)
+bool check_col(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, const int& chess_width, bool&myturn)
 {
 	if (myturn == true)
 	{
@@ -78,7 +78,7 @@ bool check_col(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrches
 	return Is_col_win(point_chess, ptrchesses, chess_width, 0);
 
 }
-bool Is_col_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, int& chess_width, int i)
+bool Is_col_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, const int& chess_width, int i)
 {
 	int count = -1;
 	for (
@@ -116,7 +116,7 @@ bool Is_col_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrche
 		return false;
 }
 
-bool check_obl(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, int& chess_width, bool&myturn)
+bool check_obl(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, const int& chess_width, bool&myturn)
 {
 	if (myturn == true)
 	{
@@ -125,7 +125,7 @@ bool check_obl(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrches
 
 	return Is_obl_win(point_chess, ptrchesses, chess_width, 0);
 }
-bool Is_obl_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, int& chess_width, int i)
+bool Is_obl_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, const int& chess_width, int i)
 {
 	int count = -1;
 	//ChessPoint temp = point_chess;
@@ -163,7 +163,7 @@ bool Is_obl_win(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrche
 	else
 		return false;
 }
-bool check_obl_a(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, int& chess_width, bool&myturn)
+bool check_obl_a(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, const int& chess_width, bool&myturn)
 {
 	if (myturn == true)
 	{
@@ -171,7 +171,7 @@ bool check_obl_a(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrch
 	}
 	return Is_obl_win_a(point_chess, ptrchesses, chess_width, 0);
 }
-bool Is_obl_win_a(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, int& chess_width, int i)
+bool Is_obl_win_a(ChessPoint& point_chess, map<ChessPoint, int, cmp> const* ptrchesses, const int& chess_width, int i)
 {
 	int count = -1;
 	//ChessPoint temp = point_chess;

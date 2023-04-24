@@ -35,27 +35,31 @@
 #include "migration\data_base\DataWuziqi.h"
 #include "migration\rule\rule.h"
 
+using std::cout;
+using std::endl;
+
+const int CHESS_WIDTH = 50;
+const pair<int, int> WHITE_CHESS_LOCA(100, 100);
+
 
 GlCirclePainter* ptrChessWhitePainter = nullptr;
 GlCirclePainter* ptrChessBlackPainter = nullptr;
 BoardLocation* ptrBoardLoc = nullptr;
 
-//bool is_win(ChessPoint& point_chess, MapPoint*&ptrchesses, int& chess_width, bool&myturn, const bool& gamegoingon);
+//bool is_win(ChessPoint& point_chess, MapPoint*&ptrchesses, int& CHESS_WIDTH, bool&myturn, const bool& gamegoingon);
 
-bool myCharacter = false;
-bool bMyTurn = false;
-int chess_width = 50;
-PointGl myChessCoor;
+bool myCharacter;
+bool bMyTurn;
 
 
 std::mutex m;
 std::condition_variable cv;
-//bool bReady = false;
-bool bConnectionOrderConfirmed = false;
+
 
 ChessPointBuffer chess_point_buffer;
-std::queue<PointGl> SocketReceiveBuffer;
 std::mutex ChessPointBuffer::m;
+std::queue<PointGl> SocketReceiveBuffer;
+
 
 
 
@@ -64,17 +68,17 @@ volatile bool HasData = true;
 static std::thread* thread_socket = nullptr;
 static std::thread* thread_rule = nullptr;
 
-using std::cout;
-using std::endl;
-
 DataWuziqiSpecType dataWuziqiSpecType;
 GameSocketManager gameSocketManager(&dataWuziqiSpecType, handleClickInput_socket);
 
 
+void iniPlayerData() {
+	myCharacter = gameSocketManager.getBRequestConnection();
+	bMyTurn = myCharacter;
+}
 
 
-
-std::thread* matchplayer(GameSocketManager* gameSocketManager, bool myCharacter)
+std::thread* startSocketThread(GameSocketManager* gameSocketManager, bool myCharacter)
 {
 	if (gameSocketManager->getBEventMaked() == true) {
 		return nullptr;
@@ -86,10 +90,11 @@ std::thread* matchplayer(GameSocketManager* gameSocketManager, bool myCharacter)
 	// not been done.
 	myCharacter = gameSocketManager->getBRequestConnection();
 	if (myCharacter == true) {
-		//show message box telling seccess of matching a existting player.
+		//show message box telling seccess of matching a existing player.
+		cout << "match one opponent" << endl;
 	}
 	else {
-
+		cout << "waiting for one opponent" << endl;
 	}
 	return thread;
 }
@@ -107,7 +112,7 @@ void worker_rule() {
 			while (!chess_point_buffer.empty())
 			{
 				SocketData& socket_data = chess_point_buffer.front();
-				if (is_win(socket_data.point_chess, dataWuziqiSpecType.get(), chess_width, myCharacter, true)) {
+				if (is_win(socket_data.point_chess, dataWuziqiSpecType.get(), CHESS_WIDTH, myCharacter, true)) {
 					//
 					cout << "win" << endl;
 				}
@@ -120,17 +125,18 @@ void worker_rule() {
 	}
 }
 
-void startRuleThread() {
-	thread_rule = new std::thread(worker_rule);
+std::thread* startRuleThread() {
+	std::thread* thread = new std::thread(worker_rule);
+	return thread;
 }
 
 int main()
 {
-	thread_socket = matchplayer(&gameSocketManager, myCharacter);
-	myCharacter = gameSocketManager.getBRequestConnection();
-	bMyTurn = myCharacter;
-	startRuleThread();
+	thread_socket = startSocketThread(&gameSocketManager, myCharacter);
+	thread_rule = startRuleThread();
 
+	iniPlayerData();
+	
 	std::thread boardLoopRender([&]() {
 		GlfwConfigure* myConfig = GlfwConfigure::getInstance();
 		GLFWwindow* window = myConfig->getGlfWindowHandle();
@@ -140,8 +146,8 @@ int main()
 		BoardLocation::MapLoca mapLoca = boardLoc.getAllPoint();
 		ptrBoardLoc = &boardLoc;
 
-		GlCirclePainter chessWhitePainter(pair<int,int>(100,100), chess_width, CorlorChess::white);
-		GlCirclePainter chessBlackPainter(pair<int,int>(100,100), chess_width, CorlorChess::black);
+		GlCirclePainter chessWhitePainter(CorlorChess::white);
+		GlCirclePainter chessBlackPainter(CorlorChess::black);
 		ptrChessWhitePainter = &chessWhitePainter;
 		ptrChessBlackPainter = &chessBlackPainter;
 
@@ -156,12 +162,6 @@ int main()
 			processInput(window);
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-			//std::unique_lock lk(m);
-			//chessWhitePainter.addOne(myChessCoor, boardLoc.getWidth());
-			//bReady = true;
-			//cv.notify_one();
 
 			if(!SocketReceiveBuffer.empty()&& !bMyTurn) {
 				PointGl chessPoint = SocketReceiveBuffer.front();
@@ -184,12 +184,8 @@ int main()
 		gameSocketManager.TurnOffSocket();
 		gameSocketManager.closeConnection();
 	});
-	
-	
-	while (thread_socket == nullptr) {
-		cout << "thread_socket == nullptr" << endl;
-	}
-	cout << "thread_socket != nullptr" << endl;
+
 	thread_socket->join();
+	thread_rule->join();
 	return 0;
 }

@@ -9,6 +9,7 @@ class GlCirclePainter : public GlPainter
 {
 public:
 	GlCirclePainter() = delete;
+	GlCirclePainter(CorlorChess color);
 	GlCirclePainter(const PointGl& point, int width, CorlorChess color);
 	void draw() const override;
 	void setSize(const int& size) override {};

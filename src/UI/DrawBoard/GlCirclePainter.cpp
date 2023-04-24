@@ -80,6 +80,13 @@ static const double circleVertices[verticesNum] = {
 
 
 
+GlCirclePainter::GlCirclePainter(CorlorChess color)
+{
+	if (configureShader(color) == false) {
+		cout << "configureShader failed" << endl;
+	};
+}
+
 GlCirclePainter::GlCirclePainter(const PointGl& point, int width, CorlorChess color)
 {
 	addOne(point, width);
