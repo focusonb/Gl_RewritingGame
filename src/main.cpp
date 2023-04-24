@@ -34,51 +34,43 @@
 
 #include "migration\data_base\DataWuziqi.h"
 #include "migration\rule\rule.h"
+#include "Data/PlayerData.h"
 
 using std::cout;
 using std::endl;
 
 const int CHESS_WIDTH = 50;
-const pair<int, int> WHITE_CHESS_LOCA(100, 100);
 
 
 GlCirclePainter* ptrChessWhitePainter = nullptr;
 GlCirclePainter* ptrChessBlackPainter = nullptr;
 BoardLocation* ptrBoardLoc = nullptr;
 
-//bool is_win(ChessPoint& point_chess, MapPoint*&ptrchesses, int& CHESS_WIDTH, bool&myturn, const bool& gamegoingon);
-
-bool myCharacter;
-bool bMyTurn;
-
 
 std::mutex m;
 std::condition_variable cv;
 
-
+//buffer for communication of  socket thread, rule thread and UI thread.
 ChessPointBuffer chess_point_buffer;
 std::mutex ChessPointBuffer::m;
+
+//buffer for communication of socket thread and UI thread.
 std::queue<PointGl> SocketReceiveBuffer;
 
-
+//data for saving history of chess.
+DataWuziqiSpecType dataWuziqiSpecType;
 
 
 volatile bool HasData = true;
-
 static std::thread* thread_socket = nullptr;
 static std::thread* thread_rule = nullptr;
 
-DataWuziqiSpecType dataWuziqiSpecType;
+
 GameSocketManager gameSocketManager(&dataWuziqiSpecType, handleClickInput_socket);
 
 
-void iniPlayerData() {
-	myCharacter = gameSocketManager.getBRequestConnection();
-	bMyTurn = myCharacter;
-}
 
-
-std::thread* startSocketThread(GameSocketManager* gameSocketManager, bool myCharacter)
+std::thread* startSocketThread(GameSocketManager* gameSocketManager)
 {
 	if (gameSocketManager->getBEventMaked() == true) {
 		return nullptr;
@@ -88,7 +80,7 @@ std::thread* startSocketThread(GameSocketManager* gameSocketManager, bool myChar
 
 	//there may be a problem, that is when function getBRequestConnection() execute, the task of setting value has
 	// not been done.
-	myCharacter = gameSocketManager->getBRequestConnection();
+	bool myCharacter = gameSocketManager->getBRequestConnection();
 	if (myCharacter == true) {
 		//show message box telling seccess of matching a existing player.
 		cout << "match one opponent" << endl;
@@ -112,7 +104,7 @@ void worker_rule() {
 			while (!chess_point_buffer.empty())
 			{
 				SocketData& socket_data = chess_point_buffer.front();
-				if (is_win(socket_data.point_chess, dataWuziqiSpecType.get(), CHESS_WIDTH, myCharacter, true)) {
+				if (is_win(socket_data.point_chess, dataWuziqiSpecType.get(), CHESS_WIDTH, PlayerData::myCharacter, true)) {
 					//
 					cout << "win" << endl;
 				}
@@ -132,11 +124,12 @@ std::thread* startRuleThread() {
 
 int main()
 {
-	thread_socket = startSocketThread(&gameSocketManager, myCharacter);
+
+	thread_socket = startSocketThread(&gameSocketManager);
 	thread_rule = startRuleThread();
 
-	iniPlayerData();
-	
+	PlayerData::iniPlayerData(gameSocketManager);
+
 	std::thread boardLoopRender([&]() {
 		GlfwConfigure* myConfig = GlfwConfigure::getInstance();
 		GLFWwindow* window = myConfig->getGlfWindowHandle();
@@ -163,11 +156,11 @@ int main()
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			if(!SocketReceiveBuffer.empty()&& !bMyTurn) {
+			if(!SocketReceiveBuffer.empty()&& !PlayerData::bMyTurn) {
 				PointGl chessPoint = SocketReceiveBuffer.front();
-				addOneChessToBaord(chessPoint, !myCharacter, width);
+				addOneChessToBaord(chessPoint, !PlayerData::myCharacter, width);
 				SocketReceiveBuffer.pop();
-				bMyTurn = true;
+				PlayerData::bMyTurn = true;
 			}
 
 			square.draw();

@@ -9,7 +9,7 @@
 #include "../../../migration/data_base/DataWuziqi.h"
 #include "../../../migration/rule/rule.h"
 #include "../../../migration/socket/GameSocketManager.h"
-
+#include "../../../Data/PlayerData.h"
 #include <glfw3.h>
 
 
@@ -22,9 +22,7 @@ extern class DataWuziqiSpecType dataWuziqiSpecType;
 extern class GameSocketManager gameSocketManager;
 extern GlCirclePainter* ptrChessWhitePainter;
 extern GlCirclePainter* ptrChessBlackPainter;
-extern bool myCharacter;
-extern bool bMyTurn;
-extern int chess_width;
+
 extern  volatile bool HasData;
 extern std::condition_variable cv;
 extern GameSocketManager gameSocketManager;
@@ -46,6 +44,7 @@ void addOneChessToBaord(PointGl chessCoor, bool myCharacter, GlSize width ) {
 }
 
 void handleClickInput_socket(double xpos, double ypos) {
+	PlayerData::iniPlayerData(gameSocketManager);
 	PointGl chessCoor;
 	ptrBoardLoc->getChessPointGl(static_cast<int>(xpos), static_cast<int>(ypos), chessCoor);
 	DataWuziqiSpecType::Point clickPoint(chessCoor.first, chessCoor.second);
@@ -56,7 +55,7 @@ void handleClickInput_socket(double xpos, double ypos) {
 
 
 	//dataBase
-	dataWuziqiSpecType.insert(clickPoint, !myCharacter);
+	dataWuziqiSpecType.insert(clickPoint, !PlayerData::myCharacter);
 	MapPoint* ptr_m_chesses = dataWuziqiSpecType.get();
 
 
@@ -74,6 +73,7 @@ void handleClickInput_socket(double xpos, double ypos) {
 }
 
 void handleClickInput(double xpos, double ypos) {
+	
 	PointGl ChessCoor;
 	ptrBoardLoc->getChessPointGl(static_cast<int>(xpos), static_cast<int>(ypos), ChessCoor);
 	DataWuziqiSpecType::Point clickPoint(ChessCoor.first, ChessCoor.second);
@@ -84,13 +84,13 @@ void handleClickInput(double xpos, double ypos) {
 
 
 	//dataBase
-	dataWuziqiSpecType.insert(clickPoint, myCharacter);
+	dataWuziqiSpecType.insert(clickPoint, PlayerData::myCharacter);
 	MapPoint* ptr_m_chesses = dataWuziqiSpecType.get();
 
 
 	//drawe chess
 	if (ptrChessWhitePainter != nullptr) {
-		addOneChessToBaord(ChessCoor, myCharacter, ptrBoardLoc->getWidth());
+		addOneChessToBaord(ChessCoor, PlayerData::myCharacter, ptrBoardLoc->getWidth());
 	}
 
 	//rule
@@ -106,7 +106,7 @@ void mouseClick_callback(GLFWwindow * window, int button, int xposIn, int yposIn
 	if (newState == GLFW_RELEASE) {
 		return;
 	}
-	if (!bMyTurn) {
+	if (!PlayerData::bMyTurn) {
 		cout << "its not my turn, please run another one as opponent." << endl;
 		return;
 	}
@@ -125,6 +125,6 @@ void mouseClick_callback(GLFWwindow * window, int button, int xposIn, int yposIn
 		gameSocketManager.sendStrData(message_toopponent);
 
 		handleClickInput(xpos, ypos);
-		bMyTurn = false;
+		PlayerData::bMyTurn = false;
 	}
 }
