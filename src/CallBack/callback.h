@@ -3,6 +3,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glfw3.h>
+
+#include "mouseClick_callback.h"
+
 extern bool firstMouse;
 extern float lastX;
 extern float lastY;

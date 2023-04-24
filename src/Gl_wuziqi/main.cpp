@@ -24,7 +24,6 @@
 #include "../ShaderReader/FIleManager/FileManagerControler.h"
 #include "../ShaderReader/MyShader.h"
 #include "myVertices.h"
-#include "../CallBack/Class.h"
 
 
 #include "../TextureManager/TextureManager.h"

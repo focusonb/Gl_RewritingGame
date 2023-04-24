@@ -3,12 +3,12 @@
 //#include <mutex>
 //#include <condition_variable>
 
-#include "Class.h"
+#include "mouseClick_callback.h"
 #include "../DrawBoard/GlCirclePainter.h"
 #include "../DrawBoard/BoardLocation.h"
-#include "../Gl_wuziqi/migration/data_base/DataWuziqi.h"
-#include "../Gl_wuziqi/migration/rule/rule.h"
-#include "../Gl_wuziqi/migration/socket/GameSocketManager.h"
+#include "../migration/data_base/DataWuziqi.h"
+#include "../migration/rule/rule.h"
+#include "../migration/socket/GameSocketManager.h"
 
 #include <glfw3.h>
 
